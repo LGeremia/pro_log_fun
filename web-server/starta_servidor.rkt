@@ -47,7 +47,30 @@
   (define path (map path/param-path (url-path uri)))    
   (define page (car path))
   
-  (cond 
+  (cond
+    ; /remove-all
+    [(equal? page "remove-all")
+     
+     (delete-all-teams)
+     (response/xexpr
+      `(html
+        (body
+         (p "Time removido com sucesso! " )
+         '(a ((href "http://localhost:8000/")) "Voltar para o Início"))))]
+    
+     ; /remove-team
+    [(equal? page "remove-team")
+     (define id (bytes->string/utf-8
+                 (binding:form-value
+                  (bindings-assq
+                   (string->bytes/utf-8 "id") (request-bindings/raw req)))))
+     (delete-one-team  id)
+     (response/xexpr
+      `(html
+        (body
+         (p "Time removido com sucesso! " )
+         '(a ((href "http://localhost:8000/")) "Voltar para o Início"))))]
+    
     ; /form-edit
     [(equal? page "form-edit")
      (define id (bytes->string/utf-8
@@ -89,6 +112,25 @@
          (p "Time atualizado com sucesso! ",name )
          '(a ((href "http://localhost:8000/")) "Voltar para o Início"))))]
 
+    ; /generate-matches-semi
+    [(equal? page "generate-matches-semi")
+     (define teams(search-teams))
+     (print teams)
+     (response/xexpr
+      `(html
+        (body
+         (h1 "Nome dos times",@(for/list ([(team) teams])
+                                 `(h3, (createstring (vector->values team 1 2))
+                                 '(a ((href, (~a "http://localhost:8000/remove-team/?id=" (vector->values team 0 1)))) "Excluir Time")
+                                 "  "
+                                 '(a ((href, (~a "http://localhost:8000/form-edit/?id=" (vector->values team 0 1)))) "Editar Time"))))
+         '(a ((href "http://localhost:8000/form")) "Cadastrar Time")
+         "   "
+         '(a ((href "http://localhost:8000/generate-matches")) "Gerar semifinais")
+         "   "
+         '(a ((href "http://localhost:8000/remove-all")) "Excluir todos os times")
+         )))]
+    
     ; /
     [(equal? page "")
      (define teams(search-teams))
@@ -100,8 +142,14 @@
         (body
          (h1 "Nome dos times",@(for/list ([(team) teams])
                                  `(h3, (createstring (vector->values team 1 2))
+                                 '(a ((href, (~a "http://localhost:8000/remove-team/?id=" (vector->values team 0 1)))) "Excluir Time")
+                                 "  "
                                  '(a ((href, (~a "http://localhost:8000/form-edit/?id=" (vector->values team 0 1)))) "Editar Time"))))
          '(a ((href "http://localhost:8000/form")) "Cadastrar Time")
+         "   "
+         '(a ((href "http://localhost:8000/generate-matches")) "Gerar semifinais")
+         "   "
+         '(a ((href "http://localhost:8000/remove-all")) "Excluir todos os times")
          )))]
     
     ; /form
