@@ -1,3 +1,3 @@
-# Projeto Semifinais Copa do Mundo
+# Programação Lógica e Funcional
 
-Projeto criado para simular as semifinais da copa do mundo de futebol.
+Repositório criado para salvar projeto e templates da disciplina de Programação Lógica e funcional.
