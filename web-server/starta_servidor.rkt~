@@ -2,6 +2,7 @@
 
 (require web-server/servlet
          web-server/servlet-env)
+(require web-server/private/url-param)
 (require net/uri-codec)
 (require web-server/http/request-structs)
 (require db)
@@ -21,13 +22,13 @@
   )
 )
 (define (search-teams)
-         (query-rows pgc (~a "SELECT * FROM teams LIMIT 8") )
+         (query-list pgc (~a "SELECT name FROM teams LIMIT 8") )
     )
 (define (search-team team)
-         (query-rows pgc (~a "SELECT * FROM teams WHERE id = " team) )
+         (query-list pgc (~a "SELECT name FROM teams WHERE id = " team) )
     )
 (define (insert-team team)
-  (query pgc "INSERT INTO teams VALUES (DEFAULT, ?)" team)
+  (query pgc "INSERT INTO copa_mundo_racket.teams VALUES (DEFAULT, ?)" team)
   )
 
 (define (update-team id team)
@@ -63,9 +64,7 @@
                (br)
                "Novo nome do Time: " (input ([type "text"] [name "team"]))
                (br)
-               (input ([type "submit"]))
-               (br)
-               '(a ((href "http://localhost:8000/")) "Voltar para o Início")))))]
+               (input ([type "submit"]))))))]
     
     ; /print-form-data-edit
     [(equal? page "print-form-data-edit")
@@ -86,22 +85,18 @@
      (response/xexpr
       `(html
         (body
-         (p "Time atualizado com sucesso! ",name )
-         '(a ((href "http://localhost:8000/")) "Voltar para o Início"))))]
+         (p "Your name: ",name ))))]
 
     ; /
     [(equal? page "")
      (define teams(search-teams))
-     (print teams)
      (define (createstring team)
-       (~a ""  team "  "))
+       (~a ""  team))
      (response/xexpr
       `(html
         (body
-         (h1 "Nome dos times",@(for/list ([(team) teams])
-                                 `(h3, (createstring (vector->values team 1 2))
-                                 '(a ((href, (~a "http://localhost:8000/form-edit/?id=" (vector->values team 0 1)))) "Editar Time"))))
-         '(a ((href "http://localhost:8000/form")) "Cadastrar Time")
+         (h1 "Nome dos times",@(for/list ([team teams])
+                                 `(h3, (createstring team))))
          )))]
     
     ; /form
@@ -133,8 +128,7 @@
      (response/xexpr
       `(html
         (body
-         (p "Time cadastrado com sucesso! " ,name)
-         '(a ((href "http://localhost:8000/")) "Voltar para o Início"))))]
+         (p "Your name: " ))))]
     
     ; another page?
     [else
