@@ -221,7 +221,25 @@
           [(> jogo_1_time_1 jogo_1_time_2) nome_1_time_1]
           [else nome_1_time_2]
          ))
+     (define vencedor_jogo_2
+       (cond
+          [(> jogo_2_time_1 jogo_2_time_2) nome_2_time_1]
+          [else nome_2_time_2]
+         ))
+     (define vencedor_jogo_3
+       (cond
+          [(> jogo_3_time_1 jogo_3_time_2) nome_3_time_1]
+          [else nome_3_time_2]
+         ))
+     (define vencedor_jogo_4
+       (cond
+          [(> jogo_4_time_1 jogo_4_time_2) nome_4_time_1]
+          [else nome_4_time_2]
+         ))
      (print vencedor_jogo_1)
+     (print vencedor_jogo_4)
+     (print vencedor_jogo_3)
+     (print vencedor_jogo_2)
 
      (response/xexpr
       `(html
