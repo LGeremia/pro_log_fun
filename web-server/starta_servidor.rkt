@@ -119,16 +119,7 @@
      (response/xexpr
       `(html
         (body
-         (h1 "Nome dos times",@(for/list ([(team) teams])
-                                 `(h3, (createstring (vector->values team 1 2))
-                                 '(a ((href, (~a "http://localhost:8000/remove-team/?id=" (vector->values team 0 1)))) "Excluir Time")
-                                 "  "
-                                 '(a ((href, (~a "http://localhost:8000/form-edit/?id=" (vector->values team 0 1)))) "Editar Time"))))
-         '(a ((href "http://localhost:8000/form")) "Cadastrar Time")
-         "   "
-         '(a ((href "http://localhost:8000/generate-matches")) "Gerar semifinais")
-         "   "
-         '(a ((href "http://localhost:8000/remove-all")) "Excluir todos os times")
+         '(a ((href "http://localhost:8000/")) "Voltar para o Início")
          )))]
     
     ; /
