@@ -112,8 +112,8 @@
          (p "Time atualizado com sucesso! ",name )
          '(a ((href "http://localhost:8000/")) "Voltar para o Início"))))]
 
-    ; /generate-matches-semi
-    [(equal? page "generate-matches-semi")
+    ; /generate-matches-quartas
+    [(equal? page "generate-matches-quartas")
      (define teams(shuffle (search-teams)))
      (define jogo_1_time_1(list (list-ref teams 0)))
      (define jogo_1_time_2(list (list-ref teams 1)))
@@ -123,38 +123,126 @@
      (define jogo_3_time_2(list (list-ref teams 5)))
      (define jogo_4_time_1(list (list-ref teams 6)))
      (define jogo_4_time_2(list (list-ref teams 7)))
-     (print jogo_1_time_1)
      (response/xexpr
       `(html
         (body
-         (form ([method "POST"] [action "/form-gera-resultado"])
+         (form ([method "POST"] [action "/form-gera-resultado-quartas"])
                (h1 "Jogo 1",@(for/list ([(team) jogo_1_time_1])
-                                 `(h3, (vector->values team 1 2)
+                                 `(h3
+                                     " " (input ([type "text"] [readonly "true"] [name "nome_1_time_1"] [value ,(vector->values team 1 2)]))
                                      " " (input ([type "text"] [name "jogo_1_time_1"] [placeholder "Gols Marcados"]))))
                    " X ",@(for/list ([(team) jogo_1_time_2])
-                                 `(h3, (vector->values team 1 2)
+                                 `(h3
+                                      " " (input ([type "text"] [readonly "true"] [name "nome_1_time_2"] [value ,(vector->values team 1 2)]))
                                      " " (input ([type "text"] [name "jogo_1_time_2"] [placeholder "Gols Marcados"])))))
                (h1 "Jogo 2",@(for/list ([(team) jogo_2_time_1])
-                                 `(h3, (vector->values team 1 2)
+                                 `(h3
+                                    " " (input ([type "text"] [readonly "true"] [name "nome_2_time_1"] [value ,(vector->values team 1 2)]))
                                      " " (input ([type "text"] [name "jogo_2_time_1"] [placeholder "Gols Marcados"]))))
                    " X ",@(for/list ([(team) jogo_2_time_2])
-                                 `(h3, (vector->values team 1 2)
+                                 `(h3
+                                    " " (input ([type "text"] [readonly "true"] [name "nome_2_time_2"] [value ,(vector->values team 1 2)]))
                                       " " (input ([type "text"] [name "jogo_2_time_2"] [placeholder "Gols Marcados"])))))
                (h1 "Jogo 3",@(for/list ([(team) jogo_3_time_1])
-                                 `(h3, (vector->values team 1 2)
+                                 `(h3
+                                    " " (input ([type "text"] [readonly "true"] [name "nome_3_time_1"] [value ,(vector->values team 1 2)]))
                                      " " (input ([type "text"] [name "jogo_3_time_1"] [placeholder "Gols Marcados"]))))
                    " X ",@(for/list ([(team) jogo_3_time_2])
-                                 `(h3, (vector->values team 1 2)
+                                 `(h3
+                                    " " (input ([type "text"] [readonly "true"] [name "nome_3_time_2"] [value ,(vector->values team 1 2)]))
                                      " " (input ([type "text"] [name "jogo_3_time_2"] [placeholder "Gols Marcados"])))))
                (h1 "Jogo 4",@(for/list ([(team) jogo_4_time_1])
-                                 `(h3, (vector->values team 1 2)
+                                 `(h3
+                                    " " (input ([type "text"] [readonly "true"] [name "nome_4_time_1"] [value ,(vector->values team 1 2)]))
                                      " " (input ([type "text"] [name "jogo_4_time_1"] [placeholder "Gols Marcados"]))))
                    " X ",@(for/list ([(team) jogo_4_time_2])
-                                 `(h3, (vector->values team 1 2)
+                                 `(h3
+                                    " " (input ([type "text"] [readonly "true"] [name "nome_4_time_2"] [value ,(vector->values team 1 2)]))
                                      " " (input ([type "text"] [name "jogo_4_time_2"] [placeholder "Gols Marcados"])))))
                (input ([type "submit"])))
          '(a ((href "http://localhost:8000/")) "Voltar para o Início")
          )))]
+
+    ; /form-gera-resultado-quartas
+    [(equal? page "form-gera-resultado-quartas")
+  
+     ; extract the form data:
+     (define post-data (bytes->string/utf-8 (request-post-data/raw req)))
+     
+     ; convert to an alist:
+     (define form-data (form-urlencoded->alist post-data))
+
+     ; pull out the user and comment:
+     (define nome_1_time_1 (cdr (assq 'nome_1_time_1 form-data)))
+     (define nome_1_time_2 (cdr (assq 'nome_1_time_2 form-data)))
+     (define nome_2_time_1 (cdr (assq 'nome_2_time_1 form-data)))
+     (define nome_2_time_2 (cdr (assq 'nome_2_time_2 form-data)))
+     (define nome_3_time_1 (cdr (assq 'nome_3_time_1 form-data)))
+     (define nome_3_time_2 (cdr (assq 'nome_3_time_2 form-data)))
+     (define nome_4_time_1 (cdr (assq 'nome_4_time_1 form-data)))
+     (define nome_4_time_2 (cdr (assq 'nome_4_time_2 form-data)))
+     (define jogo_1_time_1
+       (cond
+         [(equal? "" (cdr (assq 'jogo_1_time_1 form-data))) (random 7)]
+         [else (string->number (cdr (assq 'jogo_1_time_1 form-data)))]))
+     (define jogo_1_time_2
+       (cond
+         [(equal? "" (cdr (assq 'jogo_1_time_2 form-data))) (random 7)]
+         [else (string->number (cdr (assq 'jogo_1_time_2 form-data)))]))
+     (define jogo_2_time_1
+       (cond
+         [(equal? "" (cdr (assq 'jogo_2_time_1 form-data))) (random 7)]
+         [else (string->number (cdr (assq 'jogo_2_time_1 form-data)))]))
+     (define jogo_2_time_2
+       (cond
+         [(equal? "" (cdr (assq 'jogo_2_time_2 form-data))) (random 7)]
+         [else (string->number (cdr (assq 'jogo_2_time_2 form-data)))]))
+     (define jogo_3_time_1
+       (cond
+         [(equal? "" (cdr (assq 'jogo_3_time_1 form-data))) (random 7)]
+         [else (string->number (cdr (assq 'jogo_3_time_1 form-data)))]))
+     (define jogo_3_time_2
+       (cond
+         [(equal? "" (cdr (assq 'jogo_3_time_2 form-data))) (random 7)]
+         [else (string->number (cdr (assq 'jogo_3_time_2 form-data)))]))
+     (define jogo_4_time_1
+       (cond
+         [(equal? "" (cdr (assq 'jogo_4_time_1 form-data))) (random 7)]
+         [else (string->number (cdr (assq 'jogo_4_time_1 form-data)))]))
+     (define jogo_4_time_2
+       (cond
+         [(equal? "" (cdr (assq 'jogo_4_time_2 form-data))) (random 7)]
+         [else (string->number (cdr (assq 'jogo_4_time_2 form-data)))]))
+     (print nome_1_time_1)
+     (print jogo_1_time_1)
+     (print jogo_1_time_2)
+     (define vencedor_jogo_1
+       (cond
+          [(> jogo_1_time_1 jogo_1_time_2) nome_1_time_1]
+          [else nome_1_time_2]
+         ))
+     (print vencedor_jogo_1)
+
+     (response/xexpr
+      `(html
+        (body
+         (h1 "Resultados Quartas")
+         `(p "" ,nome_1_time_1 ": ",jogo_1_time_1)
+         " X "
+         `(p "" ,nome_1_time_2 ": ",jogo_1_time_2)
+         (br)
+         `(p "" ,nome_2_time_1 ": ",jogo_2_time_1)
+         " X "
+         `(p "" ,nome_2_time_2 ": ",jogo_2_time_2)
+         (br)
+         `(p "" ,nome_3_time_1 ": ",jogo_3_time_1)
+         " X "
+         `(p "" ,nome_3_time_2 ": ",jogo_3_time_2)
+         (br)
+         `(p "" ,nome_4_time_1 ": ",jogo_4_time_1)
+         " X "
+         `(p "" ,nome_4_time_2 ": ",jogo_4_time_2)
+         '(a ((href "http://localhost:8000/")) "Voltar para o Início"))))]
     
     ; /
     [(equal? page "")
@@ -171,7 +259,7 @@
                                  '(a ((href, (~a "http://localhost:8000/form-edit/?id=" (vector->values team 0 1)))) "Editar Time"))))
          '(a ((href "http://localhost:8000/form")) "Cadastrar Time")
          "   "
-         '(a ((href "http://localhost:8000/generate-matches-semi")) "Gerar semifinais")
+         '(a ((href "http://localhost:8000/generate-matches-quartas")) "Gerar quartas de finais")
          "   "
          '(a ((href "http://localhost:8000/remove-all")) "Excluir todos os times")
          )))]
