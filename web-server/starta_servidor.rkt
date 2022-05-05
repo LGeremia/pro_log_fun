@@ -114,18 +114,43 @@
 
     ; /generate-matches-semi
     [(equal? page "generate-matches-semi")
-     (define teams(search-teams))
-     (print teams)
+     (define teams(shuffle (search-teams)))
+     (define jogo_1(vector (vector->values (list-ref teams 0) 1 2)  (vector->values (list-ref teams 1) 1 2)))
+     (define jogo_2(vector (vector->values (list-ref teams 2) 1 2)  (vector->values (list-ref teams 3) 1 2)))
+     (define jogo_3(vector (vector->values (list-ref teams 4) 1 2)  (vector->values (list-ref teams 5) 1 2)))
+     (define jogo_4(vector (vector->values (list-ref teams 6) 1 2)  (vector->values (list-ref teams 7) 1 2)))
+     (define time_1(vector->values jogo_1 0 1))
+     (define time_2(vector->values jogo_1 1 2))
+     (define time_3(vector->values jogo_2 0 1))
+     (define time_4(vector->values jogo_2 1 2))
+     (define time_5(vector->values jogo_3 0 1))
+     (define time_6(vector->values jogo_3 1 2))
+     (define time_7(vector->values jogo_4 0 1))
+     (define time_8(vector->values jogo_4 1 2))
+     (print time_8)
      (response/xexpr
       `(html
         (body
+         (form ([method "POST"] [action "/print-form-data-edit"])
+               `(h1 "Jogo 1"
+                    `(h3 time_1)
+                    "  " (input ([type "text"] [placeholder "Gols"] [name "gols_time1_jogo1"])))
+               ;(h1 "Jogo 2",
+                 ;                `(h3, (vector->values jogo_2 0 1)
+                 ;                  "  " (input ([type "text"] [placeholder "Gols"] [name "gols_time1_jogo2"]))))
+               ;(h1 "Jogo 3",
+               ;                  `(h3, (vector->values jogo_3 0 1)
+               ;                  "  " (input ([type "text"] [placeholder "Gols"] [name "gols_time1_jogo3"]))))
+               ;(h1 "Jogo 4",
+               ;                  `(h3, (vector->values jogo_4 0 1)
+               ;                  "  " (input ([type "text"] [placeholder "Gols"] [name "gols_time1_jogo4"]))))
+               (input ([type "submit"])))
          '(a ((href "http://localhost:8000/")) "Voltar para o Início")
          )))]
     
     ; /
     [(equal? page "")
      (define teams(search-teams))
-     (print teams)
      (define (createstring team)
        (~a ""  team "  "))
      (response/xexpr
@@ -138,7 +163,7 @@
                                  '(a ((href, (~a "http://localhost:8000/form-edit/?id=" (vector->values team 0 1)))) "Editar Time"))))
          '(a ((href "http://localhost:8000/form")) "Cadastrar Time")
          "   "
-         '(a ((href "http://localhost:8000/generate-matches")) "Gerar semifinais")
+         '(a ((href "http://localhost:8000/generate-matches-semi")) "Gerar semifinais")
          "   "
          '(a ((href "http://localhost:8000/remove-all")) "Excluir todos os times")
          )))]
